@@ -331,3 +331,4 @@ ASALocalRun/
 
 package/
 source/references/
+lib/*.dll

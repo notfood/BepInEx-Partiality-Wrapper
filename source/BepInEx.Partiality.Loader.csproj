@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <Version>2.1.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <DebugType>None</DebugType>
+    <OutputPath>..\package\BepInEx\plugins\BepInEx.Partiality.Loader</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>..\lib\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>..\lib\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Partiality">
+      <HintPath>..\lib\Partiality.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.10.4">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="MonoMod" Version="19.11.5.1" />
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="19.11.5.1">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="19.11.5.1" />
+    <PackageReference Include="MonoMod.Utils" Version="19.11.5.1">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+</Project>

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-using BepInEx;
 using BepInEx.Logging;
 
 using HarmonyLib;
@@ -18,16 +17,16 @@ using MonoMod.RuntimeDetour.HookGen;
 using Partiality;
 using Partiality.Modloader;
 
-namespace BepInExPartialityWrapper
+namespace BepInEx.Partiality.Loader
 {
     [BepInPlugin(ID, NAME, VERSION)]
-    public class Wrapper : BaseUnityPlugin
+    public class PartialityLoader : BaseUnityPlugin
     {
-        const string ID = "github.notfood.BepInExPartialityWrapper";
-        const string NAME = "Partiality Wrapper";
-        const string VERSION = "2.0";
+        const string ID = "github.notfood.BepInExPartialityLoader";
+        const string NAME = "Partiality Loader";
+        const string VERSION = "2.1";
 
-        public Wrapper()
+        void Awake()
         {
             GenerateHooks();
             BootstrapPartiality();
@@ -41,7 +40,13 @@ namespace BepInExPartialityWrapper
             string pathOut = Path.Combine(Path.GetDirectoryName(Info.Location), "HOOKS-Assembly-CSharp.dll");
 
             if (File.Exists(pathOut)) {
-                return;
+
+                // Only Regenerate if Managed is newer than HOOKS
+                if (File.GetLastWriteTime(pathOut) > File.GetLastWriteTime(pathIn)) {
+                    return;
+                }
+
+                File.Delete(pathOut);
             }
 
             using (MonoModder mm = new MonoModder {
@@ -69,7 +74,7 @@ namespace BepInExPartialityWrapper
             var harmony = new Harmony(ID);
 
             harmony.Patch(AccessTools.Method(typeof(ModManager), nameof(ModManager.LoadAllMods)),
-                prefix: new HarmonyMethod(typeof(Wrapper), nameof(PrefixReturnFalse)));
+                prefix: new HarmonyMethod(typeof(PartialityLoader), nameof(PrefixReturnFalse)));
 
             PartialityManager.CreateInstance();
         }
@@ -79,7 +84,14 @@ namespace BepInExPartialityWrapper
         /// <summary>Loads the Partiality Mods after sorting</summary>
         void LoadPartialityMods()
         {
-            var modTypes = LoadTypes<PartialityMod>(Paths.PluginPath);
+            string partialityPath = Path.Combine(Paths.BepInExRootPath, "partiality");
+
+            if (!Directory.Exists(partialityPath)) {
+                Directory.CreateDirectory(partialityPath);
+                return;
+            }
+
+            var modTypes = LoadTypes<PartialityMod>(partialityPath);
 
             var loadedMods = PartialityManager.Instance.modManager.loadedMods;
 
